@@ -1,0 +1,12 @@
+.vscode/
+test*
+cache/
+*.ipynb*
+*.ipynb*/
+*pycache*
+*pycache*/
+dist/
+*egg-info/
+__*
+!__init__.py
+docs/

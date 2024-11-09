@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opencity-doc-frontend
+  namespace: web
+  labels:
+    app: opencity-doc-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opencity-doc-frontend
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: opencity-doc-frontend
+    spec:
+      automountServiceAccountToken: false
+      imagePullSecrets:
+        - name: docker-pull
+      containers:
+        - name: opencity-doc-frontend
+          image: registry.fiblab.net/sim/pycitysim:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          securityContext:
+            capabilities:
+              drop: ["NET_ADMIN", "SYS_ADMIN", "NET_RAW"]
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 0.01m
+              memory: 100Mi
+            limits:
+              memory: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opencity-doc-frontend
+  namespace: web
+spec:
+  selector:
+    app: opencity-doc-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: opencity-doc-frontend
+  namespace: web
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: opencity.sim.fiblab.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: opencity-doc-frontend
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - opencity.sim.fiblab.net
+      secretName: fiblab-tls

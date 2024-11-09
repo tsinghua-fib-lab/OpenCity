@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=41", "wheel", "setuptools-git-versioning<2"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools-git-versioning]
+enabled = true
+
+[project]
+name = "opencity"
+authors = [
+    {name = "Yuwei Yan", email = "pinkgranite86@gmail.com"}
+]
+description = "LLM Agent City Environment SDK"
+keywords = ["agent", "city", "LLM"]
+readme = "README.md"
+license = {file = "LICENSE"}
+dynamic = ["version"]
+requires-python = ">=3.8"
+dependencies = [
+    "Deprecated"==1.2.14
+    "numpy"==1.24.1
+    "Pillow"==11.0.0
+    "protobuf"==5.28.3
+    "pycitydata"==1.0.0
+    "pycityproto"==2.0.0a8
+    "Requests"==2.32.3
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/tsinghua-fib-lab/OpenCity"
+Repository = "https://github.com/tsinghua-fib-lab/OpenCity.git"
+Issues = "https://github.com/tsinghua-fib-lab/OpenCity/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["opencity*"]
